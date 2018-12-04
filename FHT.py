@@ -11,6 +11,7 @@ Created on Tue Nov 27 17:22:42 2018
 
 import numpy as np
 
+
 def FHT(img):
     height = img.shape[0]   # высота картинки (ее делим пополам на каждой итерации)
                             
@@ -26,8 +27,6 @@ def FHT(img):
     
     hough_top = FHT(top)       # Хаф-образы верха и низа соответсвенно
     hough_bottom = FHT(bottom) #
-
-
     """
     Идем шагом по -2 с конца массива (то есть снизу вверх) итогового Хаф-образа
     На i-ую строчку записываем сумму соответсвующей (т.е. (i - 1) / 2 -ой) строчки
@@ -78,6 +77,11 @@ b = np.array([
               ])
 c = np.random.randint(0, 20, (16, 16))
 
+d = np.array([[1, 2],
+              [3, 4]
+              ])
+
 print(FHT(a))
 print(FHT(b))
 print(FHT(c))
+print(FHT(d))
