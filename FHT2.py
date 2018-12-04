@@ -9,6 +9,25 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 
+def normalize1(img):
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            for c in range(img.shape[2]):
+                img[i][j][c] = np.uint8(img[i][j][c] % 256)
+    return img
+
+def normalize2(img):
+    for c in range(img.shape[2]):
+        max = 0
+        for i in range(img.shape[0]):
+            for j in range(img.shape[1]):
+                if max < img[i][j][c]:
+                    max = img[i][j][c]
+        for i in range(img.shape[0]):
+            for j in range(img.shape[1]):
+                img[i][j][c] = np.uint8(round(img[i][j][c] / max * 255))
+    return img
+
 def FHT(img):
     height = img.shape[0]   # высота картинки (ее делим пополам на каждой итерации)
     length = img.shape[1]   # длина картинки
@@ -33,18 +52,17 @@ def FHT(img):
                     index = index % length
                 
                 hough_Img[i][j][ch] = int(hough_bottom[(i - 1) // 2][j][ch]) + int(hough_top[(i - 1) // 2][index][ch])
-                
                 index = j + shift + 1
                 if(index >= length):
                     index = index % length
                     
                 hough_Img[i - 1][j][ch] = int(hough_bottom[(i - 1) // 2][j][ch]) + int(hough_top[(i - 1) // 2][index][ch])
-                
-    
     return hough_Img
 
-img = cv.imread("./lisa64x64.png")
-plt.imshow(img)
-himg = FHT(img)
-print(himg.shape)
-#plt.imshow(himg)
+
+img1 = cv.imread("./lisa64x64.png")
+img2 = cv.imread("./line16x16purple.png")
+#plt.imshow(img1)
+himg = FHT(img2)
+himg = normalize2(himg)
+plt.imshow(himg)
