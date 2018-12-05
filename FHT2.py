@@ -60,9 +60,13 @@ def FHT(img):
     return hough_Img
 
 
-img1 = cv.imread("./lisa64x64.png")
-img2 = cv.imread("./line16x16purple.png")
-#plt.imshow(img1)
-himg = FHT(img2)
+img1 = cv.imread("./img/lisa64x64.png")
+img2 = cv.imread("./img/line16x16purple.png")
+img3 = cv.imread("./img/line64x64.png")
+img4 = cv.imread("./img/point64x64.png")
+img5 = cv.imread("./img/intersec_lines64x64purple.png")
+img6 = cv.imread("./img/non-diadic_line64x64purple.png")
+#plt.imshow(img6)
+himg = FHT(img6)
 himg = normalize2(himg)
 plt.imshow(himg)
