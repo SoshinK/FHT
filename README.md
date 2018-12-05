@@ -1,1 +1,1 @@
-# FHT
+# FHT - Fast Hough Transform
