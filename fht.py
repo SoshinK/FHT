@@ -11,7 +11,8 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import copy
 from math import log2
-
+from math import floor
+from math import ceil
 
 
 
@@ -243,6 +244,7 @@ def hough_rd(n):
     Изображение с прямой numpy.array
 """
 def draw_vert_r(img, s, t, color):
+    img = copy.deepcopy(img)
     p = int(log2(img.shape[0]))
     t_bytes = np.zeros(p, dtype=int)
     for i in range(p):
@@ -359,3 +361,67 @@ def hough_getlines(img, numlns, sq_size = 6):
         himg = supp_point(himg, line[0], line[1], sq_size, (0, 0, 0))
         retlines.append(line)
     return retlines
+
+
+
+
+def byterepr(val, digits):
+    k = val
+    brepr = np.zeros(digits, dtype=int)
+    for i in range(digits):
+        brepr[digits - i - 1] = k % 2
+        k = k // 2
+    if k == 0:
+        return ''.join(list(map(str, brepr)))
+
+
+
+def get_diadln(imgsize, point1, point2):
+    if(point2[1] >= point1[1]):
+        low = point1
+        high = point2
+    else:
+        low = point2
+        high = point1
+    p = int(log2(imgsize))
+    delta_x = high[0] - low[0]
+    highb = byterepr(high[1], p)
+    lowb = byterepr(low[1], p)
+    prev_sum = 0
+    diadpatternsp_h = []
+    diadpatternsp_l = []
+    for i in range(p):
+        diadpatternsp_h.append(int(highb[:(i + 1)], 2) - prev_sum)
+        prev_sum += diadpatternsp_h[i]
+    prev_sum = 0
+    for i in range(p):
+        diadpatternsp_l.append(int(lowb[:(i + 1)], 2) - prev_sum)
+        prev_sum += diadpatternsp_l[i]
+    diad_diff = np.array(diadpatternsp_h) - np.array(diadpatternsp_l)
+    bytes_t = np.zeros(p, dtype=int)
+    for i in range(p - 1, -1, -1):
+        if (diad_diff[i] <= delta_x):
+            bytes_t[i] = 1
+            delta_x -= diad_diff[i]
+    
+    t = 0
+    bpow = 1
+    for i in range(p):
+        t += bytes_t[i] * bpow
+        bpow *= 2
+    shift = 0
+    prev_sum = 0
+    for i in range(p):
+        a = int(lowb[:(i + 1)], 2)
+        a -= prev_sum
+        prev_sum += a
+        shift += a * bytes_t[i]
+    s = low[0] - shift
+    return s, t
+
+    
+
+
+
+        
+            
